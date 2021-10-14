@@ -2,6 +2,7 @@ package com.example.manejandobasesdedatossqlite2021;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -39,6 +40,35 @@ public class ManejadorBD extends SQLiteOpenHelper {
         long resultado = db.insert(TABLE_NAME,null, contentValues);
         db.close();
         return (resultado !=-1);
+
+    }
+
+    public boolean borrar(String id){
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        int borrados = sqLiteDatabase.delete(TABLE_NAME, COL_ID +"=?", new String[]{id});
+        sqLiteDatabase.close();
+
+        return (borrados>0);
+
+    }
+
+    public Cursor listar(){
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM "+TABLE_NAME, null);
+        return cursor;
+    }
+
+    public boolean actualizar (String id, String modelo, String marca, String precio){
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_MARCA, marca);
+        contentValues.put(COL_MODELO, modelo);
+        contentValues.put(COL_PRECIO, precio);
+        long resultado = sqLiteDatabase.update(TABLE_NAME, contentValues, COL_ID+"=?", new String[]{id});
+
+        sqLiteDatabase.close();
+
+        return (resultado>0);
 
     }
 
